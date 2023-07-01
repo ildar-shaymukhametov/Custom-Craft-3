@@ -25,25 +25,37 @@ public class Plugin : BaseUnityPlugin
         // set project-scoped logger instance
         Logger = base.Logger;
 
-        // generates sample recipes
-        var type = typeof(TechType);
-        var sampleRecipes = Enum.GetValues(type)
-            .Cast<TechType>()
-            .Where(x => type.GetField(x.ToString()).GetCustomAttribute<ObsoleteAttribute>() is null)
-            .Select(x => (TechType: x, RecipeData: CraftDataHandler.GetRecipeData(x)))
-            .Where(x => x.RecipeData is not null && x.RecipeData.Ingredients.Any())
-            .Select(x => new Recipe(x.TechType, x.RecipeData))
-            .ToList();
+        GenerateSampleRecipes();
+        LoadModifiedRecipes();
+        LoadCustomSizes();
 
-        var sampleRecipesPath = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "SampleFiles", "ModifiedRecipes.json");
-        sampleRecipes.SaveJson(sampleRecipesPath);
+        // register harmony patches, if there are any
+        Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
+        Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
+    }
 
-        // load and set modified recipes
-        var modifiedRecipesPath = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "WorkingFiles", "ModifiedRecipes.json");
-        var modifiedRecipes = new List<Recipe>();
-        modifiedRecipes.LoadJson(modifiedRecipesPath);
+    private static void LoadCustomSizes()
+    {
+        var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "WorkingFiles", "CustomSizes.json");
+        var list = new List<Size>();
+        list.LoadJson(path);
 
-        foreach (var item in modifiedRecipes)
+        foreach (var item in list)
+        {
+            if (Enum.TryParse(item.Name, out TechType techType))
+            {
+                CraftDataHandler.SetItemSize(techType, item.Width, item.Height);
+            }
+        }
+    }
+
+    private static void LoadModifiedRecipes()
+    {
+        var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "WorkingFiles", "ModifiedRecipes.json");
+        var list = new List<Recipe>();
+        list.LoadJson(path);
+
+        foreach (var item in list)
         {
             var techType = (TechType)Enum.Parse(typeof(TechType), item.Name);
             CraftDataHandler.SetRecipeData(techType, new RecipeData
@@ -52,22 +64,20 @@ public class Plugin : BaseUnityPlugin
                 Ingredients = item.Ingredients.Select(x => new global::Ingredient((TechType)Enum.Parse(typeof(TechType), x.Name), x.Amount)).ToList()
             });
         }
+    }
 
-        // load and set modified sizes
-        var customSizesPath = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "WorkingFiles", "CustomSizes.json");
-        var customSizes = new List<Size>();
-        customSizes.LoadJson(customSizesPath);
+    private static void GenerateSampleRecipes()
+    {
+        var type = typeof(TechType);
+        var list = Enum.GetValues(type)
+            .Cast<TechType>()
+            .Where(x => type.GetField(x.ToString()).GetCustomAttribute<ObsoleteAttribute>() is null)
+            .Select(x => (TechType: x, RecipeData: CraftDataHandler.GetRecipeData(x)))
+            .Where(x => x.RecipeData is not null && x.RecipeData.Ingredients.Any())
+            .Select(x => new Recipe(x.TechType, x.RecipeData))
+            .ToList();
 
-        foreach (var item in customSizes)
-        {
-            if (Enum.TryParse(item.Name, out TechType techType))
-            {
-                CraftDataHandler.SetItemSize(techType, item.Width, item.Height);
-            }
-        }
-
-        // register harmony patches, if there are any
-        Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
-        Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
+        var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "SampleFiles", "ModifiedRecipes.json");
+        list.SaveJson(path);
     }
 }
