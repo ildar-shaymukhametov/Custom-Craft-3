@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33801.468
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BZModding.Nautilus", "BZModding.Nautilus.csproj", "{7C515F1C-B285-44CC-A7BB-DA9898F13263}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BZModding.Nautilus", "BZ\BZModding.Nautilus.csproj", "{7C515F1C-B285-44CC-A7BB-DA9898F13263}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SNModding.Nautilus", "SN\SNModding.Nautilus.csproj", "{0A53E7CF-692B-41BD-A289-F43027340661}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{7C515F1C-B285-44CC-A7BB-DA9898F13263}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C515F1C-B285-44CC-A7BB-DA9898F13263}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C515F1C-B285-44CC-A7BB-DA9898F13263}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A53E7CF-692B-41BD-A289-F43027340661}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A53E7CF-692B-41BD-A289-F43027340661}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A53E7CF-692B-41BD-A289-F43027340661}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A53E7CF-692B-41BD-A289-F43027340661}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
