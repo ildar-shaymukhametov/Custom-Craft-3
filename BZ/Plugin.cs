@@ -61,7 +61,8 @@ public class Plugin : BaseUnityPlugin
             CraftDataHandler.SetRecipeData(techType, new RecipeData
             {
                 craftAmount = item.CraftAmount,
-                Ingredients = item.Ingredients.Select(x => new global::Ingredient((TechType)Enum.Parse(typeof(TechType), x.Name), x.Amount)).ToList()
+                Ingredients = item.Ingredients.Select(x => new global::Ingredient((TechType)Enum.Parse(typeof(TechType), x.Name), x.Amount)).ToList(),
+                LinkedItems = item.LinkedItems.Select(x => (TechType)Enum.Parse(typeof(TechType), x)).ToList()
             });
         }
     }
