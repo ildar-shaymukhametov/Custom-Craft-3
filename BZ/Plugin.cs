@@ -28,6 +28,7 @@ public class Plugin : BaseUnityPlugin
         GenerateSampleRecipes();
         LoadModifiedRecipes();
         LoadCustomSizes();
+        GenerateTechTypeReference();
 
         // register harmony patches, if there are any
         Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
@@ -79,6 +80,19 @@ public class Plugin : BaseUnityPlugin
             .ToList();
 
         var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "SampleFiles", "ModifiedRecipes.json");
+        list.SaveJson(path);
+    }
+
+    private static void GenerateTechTypeReference()
+    {
+        var type = typeof(TechType);
+        var list = Enum.GetValues(type)
+            .Cast<TechType>()
+            .Where(x => type.GetField(x.ToString()).GetCustomAttribute<ObsoleteAttribute>() is null)
+            .Select(x => x.ToString())
+            .ToList();
+
+        var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "SampleFiles", "TechTypeReference.json");
         list.SaveJson(path);
     }
 }
