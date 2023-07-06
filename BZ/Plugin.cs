@@ -1,14 +1,14 @@
-﻿using System.Reflection;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using Nautilus.Crafting;
 using Nautilus.Handlers;
-using System.Linq;
 using Nautilus.Json.ExtensionMethods;
 using System;
-using System.IO;
 using System.Collections.Generic;
-using Nautilus.Crafting;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace BZModding.Nautilus;
 
@@ -47,6 +47,10 @@ public class Plugin : BaseUnityPlugin
             {
                 CraftDataHandler.SetItemSize(techType, item.Width, item.Height);
             }
+            else
+            {
+                Logger.LogWarning($"Custom size: \"{item.Name}\" is an invalid item name. Item will be skipped.");
+            }
         }
     }
 
@@ -58,13 +62,48 @@ public class Plugin : BaseUnityPlugin
 
         foreach (var item in list)
         {
-            var techType = (TechType)Enum.Parse(typeof(TechType), item.Name);
-            CraftDataHandler.SetRecipeData(techType, new RecipeData
+            if (Enum.TryParse(item.Name, out TechType techType))
             {
-                craftAmount = item.CraftAmount,
-                Ingredients = item.Ingredients.Select(x => new global::Ingredient((TechType)Enum.Parse(typeof(TechType), x.Name), x.Amount)).ToList(),
-                LinkedItems = item.LinkedItems.Select(x => (TechType)Enum.Parse(typeof(TechType), x)).ToList()
-            });
+                CraftDataHandler.SetRecipeData(techType, new RecipeData
+                {
+                    craftAmount = item.CraftAmount,
+                    Ingredients = item.Ingredients
+                        .Select(x =>
+                        {
+                            if (Enum.TryParse(x.Name, out TechType techType))
+                            {
+                                return (Ok: true, TechType: techType, x.Amount);
+                            }
+                            else
+                            {
+                                Logger.LogWarning($"Modified recipe ({item.Name}): \"{x.Name}\" is an invalid ingredient name. Item will be skipped.");
+                                return (Ok: false, default, default);
+                            }
+                        })
+                        .Where(x => x.Ok)
+                        .Select(x => new global::Ingredient(x.TechType, x.Amount))
+                        .ToList(),
+                    LinkedItems = item.LinkedItems.Select(x =>
+                    {
+                        if (Enum.TryParse(x, out TechType techType))
+                        {
+                            return (Ok: true, TechType: techType);
+                        }
+                        else
+                        {
+                            Logger.LogWarning($"Modified recipe ({item.Name}): \"{x}\" is an invalid linked item name. Item will be skipped.");
+                            return (Ok: false, default);
+                        }
+                    })
+                    .Where(x => x.Ok)
+                    .Select(x => x.TechType)
+                    .ToList()
+                });
+            }
+            else
+            {
+                Logger.LogWarning($"Modified recipe: \"{item.Name}\" is an invalid recipe name. Item will be skipped.");
+            }
         }
     }
 
