@@ -13,16 +13,25 @@ namespace SNModding.Nautilus.Dtos
         public int Height { get; set; }
         public string Icon { get; set; }
         public string Model { get; set; }
-        public List<Ingredient> Ingredients { get; set; }
-        public List<string> LinkedItems { get; set; }
+        public Ingredient[] Ingredients { get; set; }
+        public string[] LinkedItems { get; set; }
         public int CraftAmount { get; set; }
+        public string FabricatorType { get; set; }
+        public string[] Path { get; set; }
+        public float CraftTimeSeconds { get; set; }
 
         public (ItemData, List<string>) Validate()
         {
             var errors = new List<string>();
             if (!Enum.TryParse(Model, out TechType model))
             {
-                errors.Add($"\"{Model}\" is an invalid model name. This recipe will be skipped");
+                errors.Add($"\"{Model}\" is not a valid model name. Skipping recipe...");
+                return (null, errors);
+            }
+
+            if (!Enum.TryParse(FabricatorType, out CraftTree.Type fabricatorType))
+            {
+                errors.Add($"\"{FabricatorType}\" is not a valid fabricator type. Skipping recipe...");
                 return (null, errors);
             }
 
@@ -46,7 +55,10 @@ namespace SNModding.Nautilus.Dtos
                 Size = new Vector2int(Width, Height),
                 Icon = icon,
                 Model = model,
-                RecipeData = recipeResult.Item1
+                RecipeData = recipeResult.Item1,
+                FabricatorType = fabricatorType,
+                Path = Path,
+                CraftTimeSeconds = CraftTimeSeconds
             };
 
             return (item, errors);

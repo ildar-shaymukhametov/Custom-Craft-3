@@ -14,7 +14,7 @@ internal class Size
         var errors = new List<string>();
         if (!Enum.TryParse(Name, out TechType techType))
         {
-            errors.Add($"\"{Name}\" is an invalid item name");
+            errors.Add($"\"{Name}\" is not a valid item name");
             return (default, default, errors);
         }
 

@@ -49,7 +49,7 @@ public class Plugin : BaseUnityPlugin
             }
             else
             {
-                Logger.LogWarning($"Custom size: \"{item.Name}\" is an invalid item name. Item will be skipped.");
+                Logger.LogWarning($"Custom size: \"{item.Name}\" is not a valid item name. Skipping item...");
             }
         }
     }
@@ -76,7 +76,7 @@ public class Plugin : BaseUnityPlugin
                             }
                             else
                             {
-                                Logger.LogWarning($"Modified recipe ({item.Name}): \"{x.Name}\" is an invalid ingredient name. Item will be skipped.");
+                                Logger.LogWarning($"Modified recipe ({item.Name}): \"{x.Name}\" is not a valid ingredient name. Skipping ingredient...");
                                 return (Ok: false, default, default);
                             }
                         })
@@ -91,7 +91,7 @@ public class Plugin : BaseUnityPlugin
                         }
                         else
                         {
-                            Logger.LogWarning($"Modified recipe ({item.Name}): \"{x}\" is an invalid linked item name. Item will be skipped.");
+                            Logger.LogWarning($"Modified recipe ({item.Name}): \"{x}\" is not a valid linked item name. Skipping item...");
                             return (Ok: false, default);
                         }
                     })
@@ -102,7 +102,7 @@ public class Plugin : BaseUnityPlugin
             }
             else
             {
-                Logger.LogWarning($"Modified recipe: \"{item.Name}\" is an invalid recipe name. Item will be skipped.");
+                Logger.LogWarning($"Modified recipe: \"{item.Name}\" is not a valid recipe name. Skipping recipe...");
             }
         }
     }

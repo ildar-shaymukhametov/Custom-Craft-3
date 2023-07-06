@@ -8,7 +8,7 @@ namespace SNModding.Nautilus
 {
     internal static class Utils
     {
-        public static (RecipeData, List<string>) CreateRecipeData(int craftAmount, List<Ingredient> ingredients, List<string> linkedItems)
+        public static (RecipeData, List<string>) CreateRecipeData(int craftAmount, Ingredient[] ingredients, string[] linkedItems)
         {
             var errors = new List<string>();
             var data = new RecipeData
@@ -20,7 +20,7 @@ namespace SNModding.Nautilus
                         var result = x.Validate();
                         if (result.Item1 == null)
                         {
-                            errors.Add($"\"{x.Name}\" is an invalid ingredient name");
+                            errors.Add($"\"{x.Name}\" is not a valid ingredient name");
                         }
 
                         return result;
@@ -33,7 +33,7 @@ namespace SNModding.Nautilus
                     {
                         if (!Enum.TryParse(x, out TechType techType))
                         {
-                            errors.Add($"\"{x}\" is an invalid linked item name");
+                            errors.Add($"\"{x}\" is not a valid linked item name");
                             return (Ok: false, default);
                         }
 

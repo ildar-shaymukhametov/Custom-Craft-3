@@ -23,7 +23,7 @@ internal class Ingredient
         var errors = new List<string>();
         if (!Enum.TryParse(Name, out TechType techType))
         {
-            errors.Add($"\"{Name}\" is an invalid ingredient name");
+            errors.Add($"\"{Name}\" is not a valid ingredient name");
             return (null, errors);
         }
 

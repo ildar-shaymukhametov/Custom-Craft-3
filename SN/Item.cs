@@ -19,9 +19,9 @@ namespace SNModding.Nautilus
             var prefab = new CustomPrefab(Info);
             prefab.SetGameObject(new CloneTemplate(Info, data.Model));
             prefab.SetRecipe(data.RecipeData)
-                .WithFabricatorType(CraftTree.Type.Fabricator)
-                .WithStepsToFabricatorTab(CraftTreeHandler.Paths.FabricatorsBasicMaterials)
-                .WithCraftingTime(5);
+                .WithFabricatorType(data.FabricatorType)
+                .WithStepsToFabricatorTab(data.Path)
+                .WithCraftingTime(data.CraftTimeSeconds);
             prefab.Register();
         }
     }
@@ -35,5 +35,8 @@ namespace SNModding.Nautilus
         public TechType Model { get; set; }
         public Vector2int Size { get; set; }
         public RecipeData RecipeData { get; set; }
+        public CraftTree.Type FabricatorType { get; set; }
+        public string[] Path { get; set; }
+        public float CraftTimeSeconds { get; set; }
     }
 }

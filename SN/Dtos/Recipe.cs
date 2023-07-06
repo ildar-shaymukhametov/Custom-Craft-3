@@ -15,21 +15,21 @@ internal class Recipe
     {
         Name = techType.ToString();
         CraftAmount = recipeData.craftAmount;
-        Ingredients = recipeData.Ingredients.Select(x => new Ingredient(x.techType.ToString(), x.amount)).ToList();
-        LinkedItems = recipeData.LinkedItems.Select(x => x.ToString()).ToList();
+        Ingredients = recipeData.Ingredients.Select(x => new Ingredient(x.techType.ToString(), x.amount)).ToArray();
+        LinkedItems = recipeData.LinkedItems.Select(x => x.ToString()).ToArray();
     }
 
     public string Name { get; set; }
     public int CraftAmount { get; set; }
-    public List<Ingredient> Ingredients { get; set; }
-    public List<string> LinkedItems { get; set; }
+    public Ingredient[] Ingredients { get; set; }
+    public string[] LinkedItems { get; set; }
 
     public (TechType, RecipeData, List<string>) Validate()
     {
         var errors = new List<string>();
         if (!Enum.TryParse(Name, out TechType techType))
         {
-            errors.Add($"\"{Name}\" is an invalid recipe name");
+            errors.Add($"\"{Name}\" is not a valid recipe name");
             return (default, default, errors);
         }
 
