@@ -1,9 +1,9 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using Nautilus.Crafting;
 using Nautilus.Handlers;
 using Nautilus.Json.ExtensionMethods;
+using SNModding.Nautilus.Dtos;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,10 +29,31 @@ public class Plugin : BaseUnityPlugin
         LoadModifiedRecipes();
         LoadCustomSizes();
         GenerateTechTypeReference();
+        LoadNewRecipes();
 
         // register harmony patches, if there are any
         Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
         Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
+    }
+
+    private static void LoadNewRecipes()
+    {
+        var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "WorkingFiles", "NewRecipes.json");
+        var list = new List<NewRecipe>();
+        list.LoadJson(path);
+
+        foreach (var item in list)
+        {
+            var validationResult = item.Validate();
+            if (validationResult.Item1 != null)
+            {
+                Item.Register(validationResult.Item1);
+            }
+            if (validationResult.Item2.Any())
+            {
+                Logger.LogWarning($"New recipe: {string.Join(", ", validationResult.Item2)}");
+            }
+        }
     }
 
     private static void LoadCustomSizes()
@@ -43,13 +64,15 @@ public class Plugin : BaseUnityPlugin
 
         foreach (var item in list)
         {
-            if (Enum.TryParse(item.Name, out TechType techType))
+            var validationResult = item.Validate();
+            if (validationResult.Item2.HasValue)
             {
-                CraftDataHandler.SetItemSize(techType, item.Width, item.Height);
+                CraftDataHandler.SetItemSize(validationResult.Item1, validationResult.Item2.Value);
             }
-            else
+
+            if (validationResult.Item3.Any())
             {
-                Logger.LogWarning($"Custom size: \"{item.Name}\" is an invalid item name. Item will be skipped.");
+                Logger.LogWarning($"Custom size: {string.Join(", ", validationResult.Item3)}");
             }
         }
     }
@@ -62,47 +85,15 @@ public class Plugin : BaseUnityPlugin
 
         foreach (var item in list)
         {
-            if (Enum.TryParse(item.Name, out TechType techType))
+            var validationResult = item.Validate();
+            if (validationResult.Item2 != null)
             {
-                CraftDataHandler.SetRecipeData(techType, new RecipeData
-                {
-                    craftAmount = item.CraftAmount,
-                    Ingredients = item.Ingredients
-                        .Select(x =>
-                        {
-                            if (Enum.TryParse(x.Name, out TechType techType))
-                            {
-                                return (Ok: true, TechType: techType, x.Amount);
-                            }
-                            else
-                            {
-                                Logger.LogWarning($"Modified recipe ({item.Name}): \"{x.Name}\" is an invalid ingredient name. Item will be skipped.");
-                                return (Ok: false, default, default);
-                            }
-                        })
-                        .Where(x => x.Ok)
-                        .Select(x => new CraftData.Ingredient(x.TechType, x.Amount))
-                        .ToList(),
-                    LinkedItems = item.LinkedItems.Select(x =>
-                    {
-                        if (Enum.TryParse(x, out TechType techType))
-                        {
-                            return (Ok: true, TechType: techType);
-                        }
-                        else
-                        {
-                            Logger.LogWarning($"Modified recipe ({item.Name}): \"{x}\" is an invalid linked item name. Item will be skipped.");
-                            return (Ok: false, default);
-                        }
-                    })
-                    .Where(x => x.Ok)
-                    .Select(x => x.TechType)
-                    .ToList()
-                });
+                CraftDataHandler.SetRecipeData(validationResult.Item1, validationResult.Item2);
             }
-            else
+
+            if (validationResult.Item3.Any())
             {
-                Logger.LogWarning($"Modified recipe: \"{item.Name}\" is an invalid recipe name. Item will be skipped.");
+                Logger.LogWarning($"Modified recipe ({item.Name}): {string.Join(", ", validationResult.Item3)}");
             }
         }
     }
