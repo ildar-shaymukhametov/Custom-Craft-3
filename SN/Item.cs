@@ -2,7 +2,6 @@
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
-using Nautilus.Handlers;
 
 namespace SNModding.Nautilus
 {

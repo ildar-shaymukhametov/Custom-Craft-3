@@ -30,6 +30,7 @@ public class Plugin : BaseUnityPlugin
         LoadCustomSizes();
         GenerateTechTypeReference();
         LoadNewRecipes();
+        GenerateFabricatorTypeAndPathsReference();
 
         // register harmony patches, if there are any
         Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
@@ -125,5 +126,44 @@ public class Plugin : BaseUnityPlugin
 
         var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "SampleFiles", "TechTypeReference.json");
         list.SaveJson(path);
+    }
+
+    private static void GenerateFabricatorTypeAndPathsReference()
+    {
+        var dict = new Dictionary<CraftTree.Type, object>
+        {
+            [CraftTree.Type.Constructor] = new[]
+            {
+                CraftTreeHandler.Paths.ConstructorRocket,
+                CraftTreeHandler.Paths.ConstructorVehicles
+            },
+            [CraftTree.Type.Fabricator] = new[]
+            {
+                CraftTreeHandler.Paths.FabricatorsBasicMaterials,
+                CraftTreeHandler.Paths.FabricatorsAdvancedMaterials,
+                CraftTreeHandler.Paths.FabricatorsElectronics,
+                CraftTreeHandler.Paths.FabricatorWater,
+                CraftTreeHandler.Paths.FabricatorCookedFood,
+                CraftTreeHandler.Paths.FabricatorCuredFood,
+                CraftTreeHandler.Paths.FabricatorEquipment,
+                CraftTreeHandler.Paths.FabricatorTools,
+                CraftTreeHandler.Paths.FabricatorMachines
+            },
+            [CraftTree.Type.SeamothUpgrades] = new[]
+            {
+                CraftTreeHandler.Paths.VehicleUpgradesCommonModules,
+                CraftTreeHandler.Paths.VehicleUpgradesExosuitModules,
+                CraftTreeHandler.Paths.VehicleUpgradesSeamothModules,
+                CraftTreeHandler.Paths.VehicleUpgradesTorpedoes
+            },
+            [CraftTree.Type.Workbench] = new string[0],
+            [CraftTree.Type.Centrifuge] = new string[0],
+            [CraftTree.Type.CyclopsFabricator] = new string[0],
+            [CraftTree.Type.MapRoom] = new string[0],
+            [CraftTree.Type.Rocket] = new string[0]
+        };
+
+        var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "SampleFiles", "FabricatorTypeAndPathsReference.json");
+        dict.SaveJson(path);
     }
 }
