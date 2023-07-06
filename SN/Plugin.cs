@@ -44,14 +44,14 @@ public class Plugin : BaseUnityPlugin
 
         foreach (var item in list)
         {
-            var validationResult = item.Validate();
-            if (validationResult.Item1 != null)
+            var result = item.Validate();
+            if (result.Item1 != null)
             {
-                Item.Register(validationResult.Item1);
+                Item.Register(result.Item1);
             }
-            if (validationResult.Item2.Any())
+            if (result.Item2.Any())
             {
-                Logger.LogWarning($"New recipe: {string.Join(", ", validationResult.Item2)}");
+                Logger.LogWarning($"New recipe: {string.Join(", ", result.Item2)}");
             }
         }
     }
@@ -64,15 +64,15 @@ public class Plugin : BaseUnityPlugin
 
         foreach (var item in list)
         {
-            var validationResult = item.Validate();
-            if (validationResult.Item2.HasValue)
+            var result = item.Validate();
+            if (result.Item2.HasValue)
             {
-                CraftDataHandler.SetItemSize(validationResult.Item1, validationResult.Item2.Value);
+                CraftDataHandler.SetItemSize(result.Item1, result.Item2.Value);
             }
 
-            if (validationResult.Item3.Any())
+            if (result.Item3.Any())
             {
-                Logger.LogWarning($"Custom size: {string.Join(", ", validationResult.Item3)}");
+                Logger.LogWarning($"Custom size: {string.Join(", ", result.Item3)}");
             }
         }
     }
@@ -85,15 +85,15 @@ public class Plugin : BaseUnityPlugin
 
         foreach (var item in list)
         {
-            var validationResult = item.Validate();
-            if (validationResult.Item2 != null)
+            var result = item.Validate();
+            if (result.Item2 != null)
             {
-                CraftDataHandler.SetRecipeData(validationResult.Item1, validationResult.Item2);
+                CraftDataHandler.SetRecipeData(result.Item1, result.Item2);
             }
 
-            if (validationResult.Item3.Any())
+            if (result.Item3.Any())
             {
-                Logger.LogWarning($"Modified recipe ({item.Name}): {string.Join(", ", validationResult.Item3)}");
+                Logger.LogWarning($"Modified recipe ({item.Name}): {string.Join(", ", result.Item3)}");
             }
         }
     }

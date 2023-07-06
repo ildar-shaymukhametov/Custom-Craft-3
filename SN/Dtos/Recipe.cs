@@ -37,23 +37,16 @@ internal class Recipe
             return (default, default, errors);
         }
 
+        var ingredientsResult = Ingredient.Validate(Ingredients);
+        if (ingredientsResult.Item2.Any())
+        {
+            errors.AddRange(ingredientsResult.Item2);
+        }
+
         return (techType, new RecipeData
         {
             craftAmount = CraftAmount,
-            Ingredients = Ingredients
-                .Select(x =>
-                {
-                    var validationResult = x.Validate();
-                    if (validationResult.Item1 == null)
-                    {
-                        errors.Add($"\"{x.Name}\" is an invalid ingredient name");
-                    }
-
-                    return validationResult;
-                })
-                .Where(x => x.Item1 != null)
-                .Select(x => x.Item1)
-                .ToList(),
+            Ingredients = ingredientsResult.Item1,
             LinkedItems = LinkedItems
                 .Select(x =>
                 {
