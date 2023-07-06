@@ -30,37 +30,15 @@ internal class Recipe
         if (!Enum.TryParse(Name, out TechType techType))
         {
             errors.Add($"\"{Name}\" is an invalid recipe name");
-        }
-
-        if (errors.Any())
-        {
             return (default, default, errors);
         }
 
-        var ingredientsResult = Ingredient.Validate(Ingredients);
-        if (ingredientsResult.Item2.Any())
+        var recipeResult = Utils.CreateRecipeData(CraftAmount, Ingredients, LinkedItems);
+        if (recipeResult.Item2.Any())
         {
-            errors.AddRange(ingredientsResult.Item2);
+            errors.AddRange(recipeResult.Item2);
         }
 
-        return (techType, new RecipeData
-        {
-            craftAmount = CraftAmount,
-            Ingredients = ingredientsResult.Item1,
-            LinkedItems = LinkedItems
-                .Select(x =>
-                {
-                    if (!Enum.TryParse(x, out TechType techType))
-                    {
-                        errors.Add($"\"{x}\" is an invalid linked item name");
-                        return (Ok: false, default);
-                    }
-
-                    return (Ok: true, LinkedItem: techType);
-                })
-                .Where(x => x.Ok)
-                .Select(x => x.LinkedItem)
-                .ToList()
-        }, errors);
+        return (techType, recipeResult.Item1, errors);
     }
 }

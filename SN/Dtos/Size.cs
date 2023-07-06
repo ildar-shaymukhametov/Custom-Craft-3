@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System;
-using System.Linq;
 
 namespace SNModding.Nautilus.Dtos;
 
@@ -16,10 +15,6 @@ internal class Size
         if (!Enum.TryParse(Name, out TechType techType))
         {
             errors.Add($"\"{Name}\" is an invalid item name");
-        }
-
-        if (errors.Any())
-        {
             return (default, default, errors);
         }
 

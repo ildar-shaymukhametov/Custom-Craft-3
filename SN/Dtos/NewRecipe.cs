@@ -1,5 +1,4 @@
-﻿using Nautilus.Crafting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,10 +23,6 @@ namespace SNModding.Nautilus.Dtos
             if (!Enum.TryParse(Model, out TechType model))
             {
                 errors.Add($"\"{Model}\" is an invalid model name. This recipe will be skipped");
-            }
-
-            if (errors.Any())
-            {
                 return (null, errors);
             }
 
@@ -37,13 +32,13 @@ namespace SNModding.Nautilus.Dtos
                 icon = SpriteManager.Get(iconTechType);
             }
 
-            var ingredientsResult = Ingredient.Validate(Ingredients);
-            if (ingredientsResult.Item2.Any())
+            var recipeResult = Utils.CreateRecipeData(CraftAmount, Ingredients, LinkedItems);
+            if (recipeResult.Item2.Any())
             {
-                errors.AddRange(ingredientsResult.Item2);
+                errors.AddRange(recipeResult.Item2);
             }
 
-            return (new ItemData
+            var item = new ItemData
             {
                 Name = Name,
                 Description = Description,
@@ -51,26 +46,10 @@ namespace SNModding.Nautilus.Dtos
                 Size = new Vector2int(Width, Height),
                 Icon = icon,
                 Model = model,
-                RecipeData = new RecipeData
-                {
-                    craftAmount = CraftAmount,
-                    Ingredients = ingredientsResult.Item1,
-                    LinkedItems = LinkedItems
-                        .Select(x =>
-                        {
-                            if (!Enum.TryParse(x, out TechType techType))
-                            {
-                                errors.Add($"\"{x}\" is an invalid linked item name");
-                                return (Ok: false, default);
-                            }
+                RecipeData = recipeResult.Item1
+            };
 
-                            return (Ok: true, LinkedItem: techType);
-                        })
-                        .Where(x => x.Ok)
-                        .Select(x => x.LinkedItem)
-                        .ToList()
-                }
-            }, errors);
+            return (item, errors);
         }
     }
 }

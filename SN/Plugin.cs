@@ -49,6 +49,7 @@ public class Plugin : BaseUnityPlugin
             {
                 Item.Register(result.Item1);
             }
+
             if (result.Item2.Any())
             {
                 Logger.LogWarning($"New recipe: {string.Join(", ", result.Item2)}");
