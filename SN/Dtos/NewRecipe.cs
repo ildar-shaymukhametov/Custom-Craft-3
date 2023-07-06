@@ -8,7 +8,6 @@ namespace SNModding.Nautilus.Dtos
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public bool UnlockAtStart { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
         public string Icon { get; set; }
@@ -55,7 +54,7 @@ namespace SNModding.Nautilus.Dtos
             {
                 Name = Name,
                 Description = Description,
-                UnlockAtStart = UnlockAtStart,
+                UnlockAtStart = true,
                 Size = new Vector2int(Width, Height),
                 Icon = icon,
                 Model = model,
