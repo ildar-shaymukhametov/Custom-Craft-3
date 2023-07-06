@@ -53,7 +53,7 @@ public class Plugin : BaseUnityPlugin
 
             if (result.Item2.Any())
             {
-                Logger.LogWarning($"New recipe: {string.Join(", ", result.Item2)}");
+                Logger.LogWarning($"New recipe ({item.Name}): {string.Join("; ", result.Item2)}");
             }
         }
     }
@@ -74,7 +74,7 @@ public class Plugin : BaseUnityPlugin
 
             if (result.Item3.Any())
             {
-                Logger.LogWarning($"Custom size: {string.Join(", ", result.Item3)}");
+                Logger.LogWarning($"Custom size: {string.Join("; ", result.Item3)}");
             }
         }
     }
@@ -95,7 +95,7 @@ public class Plugin : BaseUnityPlugin
 
             if (result.Item3.Any())
             {
-                Logger.LogWarning($"Modified recipe ({item.Name}): {string.Join(", ", result.Item3)}");
+                Logger.LogWarning($"Modified recipe ({item.Name}): {string.Join("; ", result.Item3)}");
             }
         }
     }

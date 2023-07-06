@@ -25,13 +25,13 @@ namespace SNModding.Nautilus.Dtos
             var errors = new List<string>();
             if (!Enum.TryParse(Model, out TechType model))
             {
-                errors.Add($"\"{Model}\" is not a valid model name. Skipping recipe...");
+                errors.Add($"\"{Model}\" is not a valid model name. Recipe skipped");
                 return (null, errors);
             }
 
             if (!Enum.TryParse(FabricatorType, out CraftTree.Type fabricatorType))
             {
-                errors.Add($"\"{FabricatorType}\" is not a valid fabricator type. Skipping recipe...");
+                errors.Add($"\"{FabricatorType}\" is not a valid fabricator type. Recipe skipped");
                 return (null, errors);
             }
 
@@ -39,6 +39,10 @@ namespace SNModding.Nautilus.Dtos
             if (Enum.TryParse(Icon, out TechType iconTechType))
             {
                 icon = SpriteManager.Get(iconTechType);
+            }
+            else
+            {
+                errors.Add($"\"{Icon}\" is not a valid icon name. Default icon is used");
             }
 
             var recipeResult = Utils.CreateRecipeData(CraftAmount, Ingredients, LinkedItems);
