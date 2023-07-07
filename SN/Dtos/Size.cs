@@ -2,7 +2,7 @@
 using System;
 using Nautilus.Handlers;
 
-namespace SNModding.Nautilus.Dtos;
+namespace SNModding.CustomCraft3.Dtos;
 
 internal class Size
 {

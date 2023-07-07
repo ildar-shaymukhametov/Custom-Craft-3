@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SNModding.Nautilus.Dtos;
+namespace SNModding.CustomCraft3.Dtos;
 
 internal class Recipe
 {

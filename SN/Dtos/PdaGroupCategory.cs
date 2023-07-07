@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SNModding.Nautilus.Dtos
+namespace SNModding.CustomCraft3.Dtos
 {
     internal class PdaGroupCategory
     {

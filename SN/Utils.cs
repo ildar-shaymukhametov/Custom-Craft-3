@@ -1,11 +1,11 @@
 ﻿using Nautilus.Crafting;
 using Nautilus.Handlers;
-using SNModding.Nautilus.Dtos;
+using SNModding.CustomCraft3.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SNModding.Nautilus
+namespace SNModding.CustomCraft3
 {
     internal static class Utils
     {

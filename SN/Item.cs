@@ -6,7 +6,7 @@ using Nautilus.Handlers;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SNModding.Nautilus
+namespace SNModding.CustomCraft3
 {
     internal class Item
     {

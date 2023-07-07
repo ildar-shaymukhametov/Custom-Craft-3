@@ -6,7 +6,7 @@
     <Version>1.3.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>11</LangVersion>
-	<RootNamespace>SNModding.Nautilus</RootNamespace>
+	<RootNamespace>SNModding.CustomCraft3</RootNamespace>
     <BepInExPluginGuid>com.shaimildar.customcraft3</BepInExPluginGuid>
 
     <RestoreAdditionalProjectSources>
