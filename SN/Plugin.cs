@@ -30,7 +30,7 @@ public class Plugin : BaseUnityPlugin
         LoadCustomSizes();
         GenerateSampleRecipes();
         GenerateSampleSizes();
-        GenerateFabricatorTypeAndPathsReference();
+        GenerateOthersReferences();
         GenerateTechTypeReference();
 
         // register harmony patches, if there are any
@@ -46,15 +46,15 @@ public class Plugin : BaseUnityPlugin
 
         foreach (var item in list)
         {
-            var result = item.Validate();
-            if (result.Item1 != null)
+            var (itemData, errors) = item.Validate();
+            if (itemData != null)
             {
-                Item.Register(result.Item1);
+                Item.Register(itemData);
             }
 
-            if (result.Item2.Any())
+            if (errors.Any())
             {
-                Logger.LogWarning($"New recipe ({item.Name}): {string.Join("; ", result.Item2)}");
+                Logger.LogWarning($"New recipe ({item.Name}): {string.Join("; ", errors)}");
             }
         }
     }
@@ -67,15 +67,15 @@ public class Plugin : BaseUnityPlugin
 
         foreach (var item in list)
         {
-            var result = item.Validate();
-            if (result.Item2.HasValue)
+            var (techType, size, errors) = item.Validate();
+            if (size.HasValue)
             {
-                CraftDataHandler.SetItemSize(result.Item1, result.Item2.Value);
+                CraftDataHandler.SetItemSize(techType, size.Value);
             }
 
-            if (result.Item3.Any())
+            if (errors.Any())
             {
-                Logger.LogWarning($"Custom size: {string.Join("; ", result.Item3)}");
+                Logger.LogWarning($"Custom size: {string.Join("; ", errors)}");
             }
         }
     }
@@ -88,15 +88,15 @@ public class Plugin : BaseUnityPlugin
 
         foreach (var item in list)
         {
-            var result = item.Validate();
-            if (result.Item2 != null)
+            var (techType, recipeData, errors) = item.Validate();
+            if (recipeData != null)
             {
-                CraftDataHandler.SetRecipeData(result.Item1, result.Item2);
+                CraftDataHandler.SetRecipeData(techType, recipeData);
             }
 
-            if (result.Item3.Any())
+            if (errors.Any())
             {
-                Logger.LogWarning($"Modified recipe ({item.Name}): {string.Join("; ", result.Item3)}");
+                Logger.LogWarning($"Modified recipe ({item.Name}): {string.Join("; ", errors)}");
             }
         }
     }
@@ -129,7 +129,7 @@ public class Plugin : BaseUnityPlugin
         list.SaveJson(path);
     }
 
-    private static void GenerateFabricatorTypeAndPathsReference()
+    private static void GenerateOthersReferences()
     {
         var dict = new Dictionary<CraftTree.Type, object>
         {
@@ -164,8 +164,15 @@ public class Plugin : BaseUnityPlugin
             [CraftTree.Type.Rocket] = new string[0]
         };
 
-        var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "SampleFiles", "FabricatorTypeAndPathsReference.json");
-        dict.SaveJson(path);
+        var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "SampleFiles", "OtherReferences.json");
+        var result = new
+        {
+            FabricatorTypesAndPaths = dict,
+            TechGroups = Enum.GetNames(typeof(TechGroup)),
+            TechCategories = Enum.GetNames(typeof(TechCategory))
+        };
+
+        result.SaveJson(path);
     }
 
     private static void GenerateSampleSizes()

@@ -16,8 +16,9 @@ namespace SNModding.Nautilus.Dtos
         public string[] LinkedItems { get; set; }
         public int CraftAmount { get; set; }
         public string FabricatorType { get; set; }
-        public string[] Path { get; set; }
+        public string[] FabricatorPath { get; set; }
         public float CraftTimeSeconds { get; set; }
+        public PdaGroupCategory PdaGroupCategory { get; set; }
 
         public (ItemData, List<string>) Validate()
         {
@@ -44,10 +45,16 @@ namespace SNModding.Nautilus.Dtos
                 errors.Add($"\"{Icon}\" is not a valid icon name. Default icon is used");
             }
 
-            var recipeResult = Utils.CreateRecipeData(CraftAmount, Ingredients, LinkedItems);
-            if (recipeResult.Item2.Any())
+            var (recipeData, recipeErrors) = Utils.CreateRecipeData(CraftAmount, Ingredients, LinkedItems);
+            if (recipeErrors.Any())
             {
-                errors.AddRange(recipeResult.Item2);
+                errors.AddRange(recipeErrors);
+            }
+
+            var (techGroup, techCategory, pdaErrors) = PdaGroupCategory.Validate();
+            if (pdaErrors.Any())
+            {
+                errors.AddRange(pdaErrors);
             }
 
             var item = new ItemData
@@ -58,10 +65,12 @@ namespace SNModding.Nautilus.Dtos
                 Size = new Vector2int(Width, Height),
                 Icon = icon,
                 Model = model,
-                RecipeData = recipeResult.Item1,
+                RecipeData = recipeData,
                 FabricatorType = fabricatorType,
-                Path = Path,
-                CraftTimeSeconds = CraftTimeSeconds
+                FabricatorPath = FabricatorPath,
+                CraftTimeSeconds = CraftTimeSeconds,
+                TechCategory = techCategory,
+                TechGroup = techGroup
             };
 
             return (item, errors);

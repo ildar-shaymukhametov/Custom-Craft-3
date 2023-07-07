@@ -19,8 +19,14 @@ namespace SNModding.Nautilus
             prefab.SetGameObject(new CloneTemplate(Info, data.Model));
             prefab.SetRecipe(data.RecipeData)
                 .WithFabricatorType(data.FabricatorType)
-                .WithStepsToFabricatorTab(data.Path)
+                .WithStepsToFabricatorTab(data.FabricatorPath)
                 .WithCraftingTime(data.CraftTimeSeconds);
+
+            if (data.TechGroup.HasValue && data.TechCategory.HasValue)
+            {
+                prefab.SetPdaGroupCategory(data.TechGroup.Value, data.TechCategory.Value);
+            }
+
             prefab.Register();
         }
     }
@@ -35,7 +41,9 @@ namespace SNModding.Nautilus
         public Vector2int Size { get; set; }
         public RecipeData RecipeData { get; set; }
         public CraftTree.Type FabricatorType { get; set; }
-        public string[] Path { get; set; }
+        public string[] FabricatorPath { get; set; }
         public float CraftTimeSeconds { get; set; }
+        public TechCategory? TechCategory { get; set; }
+        public TechGroup? TechGroup { get; set; }
     }
 }
