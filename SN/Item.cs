@@ -2,6 +2,9 @@
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
+using Nautilus.Handlers;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SNModding.Nautilus
 {
@@ -17,6 +20,18 @@ namespace SNModding.Nautilus
 
             var prefab = new CustomPrefab(Info);
             prefab.SetGameObject(new CloneTemplate(Info, data.Model));
+
+            var pathExists = Utils.GetFabricatorPaths().TryGetValue(data.FabricatorType, out string[][] paths) && paths.Any(x => x.SequenceEqual(data.FabricatorPath));
+            if (!pathExists)
+            {
+                var steps = new List<string>();
+                foreach (var path in data.FabricatorPath)
+                {
+                    CraftTreeHandler.AddTabNode(data.FabricatorType, path, path, SpriteManager.defaultSprite, steps.ToArray());
+                    steps.Add(path);
+                }
+            }
+
             prefab.SetRecipe(data.RecipeData)
                 .WithFabricatorType(data.FabricatorType)
                 .WithStepsToFabricatorTab(data.FabricatorPath)

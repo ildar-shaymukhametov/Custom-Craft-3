@@ -67,7 +67,7 @@ namespace SNModding.Nautilus.Dtos
                 Model = model,
                 RecipeData = recipeData,
                 FabricatorType = fabricatorType,
-                FabricatorPath = FabricatorPath,
+                FabricatorPath = FabricatorPath ?? Array.Empty<string>(),
                 CraftTimeSeconds = CraftTimeSeconds,
                 TechCategory = techCategory,
                 TechGroup = techGroup
