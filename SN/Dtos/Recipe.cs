@@ -34,7 +34,7 @@ internal class Recipe
             return (default, default, errors);
         }
 
-        var recipeResult = Utils.CreateRecipeData(CraftAmount, Ingredients, LinkedItems);
+        var recipeResult = Utils.ValidateRecipeData(CraftAmount, Ingredients, LinkedItems);
         if (recipeResult.Item2.Any())
         {
             errors.AddRange(recipeResult.Item2);

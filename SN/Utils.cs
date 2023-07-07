@@ -9,7 +9,7 @@ namespace SNModding.CustomCraft3
 {
     internal static class Utils
     {
-        public static (RecipeData, List<string>) CreateRecipeData(int craftAmount, Ingredient[] ingredients, string[] linkedItems)
+        public static (RecipeData, List<string>) ValidateRecipeData(int craftAmount, Ingredient[] ingredients, string[] linkedItems)
         {
             var errors = new List<string>();
             var data = new RecipeData
