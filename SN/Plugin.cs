@@ -25,12 +25,13 @@ public class Plugin : BaseUnityPlugin
         // set project-scoped logger instance
         Logger = base.Logger;
 
-        GenerateSampleRecipes();
+        LoadNewRecipes();
         LoadModifiedRecipes();
         LoadCustomSizes();
-        GenerateTechTypeReference();
-        LoadNewRecipes();
+        GenerateSampleRecipes();
+        GenerateSampleSizes();
         GenerateFabricatorTypeAndPathsReference();
+        GenerateTechTypeReference();
 
         // register harmony patches, if there are any
         Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
@@ -105,7 +106,7 @@ public class Plugin : BaseUnityPlugin
         var type = typeof(TechType);
         var list = Enum.GetValues(type)
             .Cast<TechType>()
-            .Where(x => type.GetField(x.ToString()).GetCustomAttribute<ObsoleteAttribute>() is null)
+            .Where(x => type.GetField(x.ToString())?.GetCustomAttribute<ObsoleteAttribute>() is null)
             .Select(x => (TechType: x, RecipeData: CraftDataHandler.GetRecipeData(x)))
             .Where(x => x.RecipeData is not null && x.RecipeData.Ingredients.Any())
             .Select(x => new Recipe(x.TechType, x.RecipeData))
@@ -120,7 +121,7 @@ public class Plugin : BaseUnityPlugin
         var type = typeof(TechType);
         var list = Enum.GetValues(type)
             .Cast<TechType>()
-            .Where(x => type.GetField(x.ToString()).GetCustomAttribute<ObsoleteAttribute>() is null)
+            .Where(x => type.GetField(x.ToString())?.GetCustomAttribute<ObsoleteAttribute>() is null)
             .Select(x => x.ToString())
             .ToList();
 
@@ -165,5 +166,17 @@ public class Plugin : BaseUnityPlugin
 
         var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "SampleFiles", "FabricatorTypeAndPathsReference.json");
         dict.SaveJson(path);
+    }
+
+    private static void GenerateSampleSizes()
+    {
+        var list = new List<Size>
+        {
+            new Size { Height = 2, Width = 2, Name = TechType.Copper.ToString() },
+            new Size { Height = 3, Width = 2, Name = TechType.PowerCell.ToString() }
+        };
+
+        var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "SampleFiles", "CustomSizes.json");
+        list.SaveJson(path);
     }
 }

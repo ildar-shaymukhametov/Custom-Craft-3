@@ -1,4 +1,5 @@
 ﻿using Nautilus.Crafting;
+using Nautilus.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,8 @@ internal class Recipe
     public (TechType, RecipeData, List<string>) Validate()
     {
         var errors = new List<string>();
-        if (!Enum.TryParse(Name, out TechType techType))
+        TechType techType;
+        if (!Enum.TryParse(Name, out techType) && !EnumHandler.TryGetValue(Name, out techType))
         {
             errors.Add($"\"{Name}\" is not a valid recipe name");
             return (default, default, errors);
