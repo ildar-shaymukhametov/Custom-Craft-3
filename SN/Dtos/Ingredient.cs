@@ -22,8 +22,7 @@ internal class Ingredient
     public (CraftData.Ingredient, List<string>) Validate()
     {
         var errors = new List<string>();
-        TechType techType;
-        if (!Enum.TryParse(Name, out techType) && !EnumHandler.TryGetValue(Name, out techType))
+        if (!Enum.TryParse(Name, out TechType techType) && !EnumHandler.TryGetValue(Name, out techType))
         {
             errors.Add($"\"{Name}\" is not a valid ingredient name");
             return (null, errors);
