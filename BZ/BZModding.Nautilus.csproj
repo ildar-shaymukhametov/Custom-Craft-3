@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
 	<AssemblyName>CustomCraft3</AssemblyName>
-    <Version>1.1.0</Version>
+    <Version>1.3.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>11</LangVersion>
-	<RootNamespace>BZModding.Nautilus</RootNamespace>
+	<RootNamespace>BZModding.CustomCraft3</RootNamespace>
     <BepInExPluginGuid>com.shaimildar.customcraft3</BepInExPluginGuid>
 
     <RestoreAdditionalProjectSources>

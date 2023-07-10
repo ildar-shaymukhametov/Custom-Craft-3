@@ -1,7 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using BZModding.CustomCraft3.Dtos;
 using HarmonyLib;
-using Nautilus.Crafting;
 using Nautilus.Handlers;
 using Nautilus.Json.ExtensionMethods;
 using System;
@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace BZModding.Nautilus;
+namespace BZModding.CustomCraft3;
 
 [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
 [BepInDependency("com.snmodding.nautilus")]
@@ -25,14 +25,38 @@ public class Plugin : BaseUnityPlugin
         // set project-scoped logger instance
         Logger = base.Logger;
 
-        GenerateSampleRecipes();
+        LoadNewRecipes();
         LoadModifiedRecipes();
         LoadCustomSizes();
+        GenerateSampleRecipes();
+        GenerateSampleSizes();
+        GenerateOthersReferences();
         GenerateTechTypeReference();
 
         // register harmony patches, if there are any
         Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
         Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
+    }
+
+    private static void LoadNewRecipes()
+    {
+        var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "WorkingFiles", "NewRecipes.json");
+        var list = new List<NewRecipe>();
+        list.LoadJson(path);
+
+        foreach (var item in list)
+        {
+            var (itemData, errors) = item.Validate();
+            if (itemData != null)
+            {
+                Item.Register(itemData);
+            }
+
+            if (errors.Any())
+            {
+                Logger.LogWarning($"New recipe ({item.Name}): {string.Join("; ", errors)}");
+            }
+        }
     }
 
     private static void LoadCustomSizes()
@@ -43,13 +67,15 @@ public class Plugin : BaseUnityPlugin
 
         foreach (var item in list)
         {
-            if (Enum.TryParse(item.Name, out TechType techType))
+            var (techType, size, errors) = item.Validate();
+            if (size.HasValue)
             {
-                CraftDataHandler.SetItemSize(techType, item.Width, item.Height);
+                CraftDataHandler.SetItemSize(techType, size.Value);
             }
-            else
+
+            if (errors.Any())
             {
-                Logger.LogWarning($"Custom size: \"{item.Name}\" is not a valid item name. Skipping item...");
+                Logger.LogWarning($"Custom size: {string.Join("; ", errors)}");
             }
         }
     }
@@ -62,47 +88,15 @@ public class Plugin : BaseUnityPlugin
 
         foreach (var item in list)
         {
-            if (Enum.TryParse(item.Name, out TechType techType))
+            var (techType, recipeData, errors) = item.Validate();
+            if (recipeData != null)
             {
-                CraftDataHandler.SetRecipeData(techType, new RecipeData
-                {
-                    craftAmount = item.CraftAmount,
-                    Ingredients = item.Ingredients
-                        .Select(x =>
-                        {
-                            if (Enum.TryParse(x.Name, out TechType techType))
-                            {
-                                return (Ok: true, TechType: techType, x.Amount);
-                            }
-                            else
-                            {
-                                Logger.LogWarning($"Modified recipe ({item.Name}): \"{x.Name}\" is not a valid ingredient name. Skipping ingredient...");
-                                return (Ok: false, default, default);
-                            }
-                        })
-                        .Where(x => x.Ok)
-                        .Select(x => new global::Ingredient(x.TechType, x.Amount))
-                        .ToList(),
-                    LinkedItems = item.LinkedItems.Select(x =>
-                    {
-                        if (Enum.TryParse(x, out TechType techType))
-                        {
-                            return (Ok: true, TechType: techType);
-                        }
-                        else
-                        {
-                            Logger.LogWarning($"Modified recipe ({item.Name}): \"{x}\" is not a valid linked item name. Skipping item...");
-                            return (Ok: false, default);
-                        }
-                    })
-                    .Where(x => x.Ok)
-                    .Select(x => x.TechType)
-                    .ToList()
-                });
+                CraftDataHandler.SetRecipeData(techType, recipeData);
             }
-            else
+
+            if (errors.Any())
             {
-                Logger.LogWarning($"Modified recipe: \"{item.Name}\" is not a valid recipe name. Skipping recipe...");
+                Logger.LogWarning($"Modified recipe ({item.Name}): {string.Join("; ", errors)}");
             }
         }
     }
@@ -112,7 +106,7 @@ public class Plugin : BaseUnityPlugin
         var type = typeof(TechType);
         var list = Enum.GetValues(type)
             .Cast<TechType>()
-            .Where(x => type.GetField(x.ToString()).GetCustomAttribute<ObsoleteAttribute>() is null)
+            .Where(x => type.GetField(x.ToString())?.GetCustomAttribute<ObsoleteAttribute>() is null)
             .Select(x => (TechType: x, RecipeData: CraftDataHandler.GetRecipeData(x)))
             .Where(x => x.RecipeData is not null && x.RecipeData.Ingredients.Any())
             .Select(x => new Recipe(x.TechType, x.RecipeData))
@@ -127,11 +121,36 @@ public class Plugin : BaseUnityPlugin
         var type = typeof(TechType);
         var list = Enum.GetValues(type)
             .Cast<TechType>()
-            .Where(x => type.GetField(x.ToString()).GetCustomAttribute<ObsoleteAttribute>() is null)
+            .Where(x => type.GetField(x.ToString())?.GetCustomAttribute<ObsoleteAttribute>() is null)
             .Select(x => x.ToString())
             .ToList();
 
         var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "SampleFiles", "TechTypeReference.json");
+        list.SaveJson(path);
+    }
+
+    private static void GenerateOthersReferences()
+    {
+        var result = new
+        {
+            FabricatorTypesAndPaths = Utils.GetFabricatorPaths(),
+            TechGroups = Enum.GetNames(typeof(TechGroup)),
+            TechCategories = Enum.GetNames(typeof(TechCategory))
+        };
+
+        var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "SampleFiles", "OtherReferences.json");
+        result.SaveJson(path);
+    }
+
+    private static void GenerateSampleSizes()
+    {
+        var list = new List<Size>
+        {
+            new Size { Height = 2, Width = 2, Name = TechType.Copper.ToString() },
+            new Size { Height = 3, Width = 2, Name = TechType.PowerCell.ToString() }
+        };
+
+        var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "SampleFiles", "CustomSizes.json");
         list.SaveJson(path);
     }
 }
