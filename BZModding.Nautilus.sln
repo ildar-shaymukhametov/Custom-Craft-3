@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BZModding.Nautilus", "BZ\BZ
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SNModding.Nautilus", "SN\SNModding.Nautilus.csproj", "{0A53E7CF-692B-41BD-A289-F43027340661}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{91203002-8588-4203-9A9C-04E63CF2A2FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0A53E7CF-692B-41BD-A289-F43027340661}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A53E7CF-692B-41BD-A289-F43027340661}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A53E7CF-692B-41BD-A289-F43027340661}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91203002-8588-4203-9A9C-04E63CF2A2FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91203002-8588-4203-9A9C-04E63CF2A2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91203002-8588-4203-9A9C-04E63CF2A2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91203002-8588-4203-9A9C-04E63CF2A2FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

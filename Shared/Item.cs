@@ -6,9 +6,9 @@ using Nautilus.Handlers;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SNModding.CustomCraft3
+namespace CustomCraft3.Shared
 {
-    internal class Item
+    public class Item
     {
         public static PrefabInfo Info { get; private set; }
 
@@ -21,7 +21,7 @@ namespace SNModding.CustomCraft3
             var prefab = new CustomPrefab(Info);
             prefab.SetGameObject(new CloneTemplate(Info, data.Model));
 
-            var pathExists = Utils.GetFabricatorPaths().TryGetValue(data.FabricatorType, out string[][] paths) && paths.Any(x => x.SequenceEqual(data.FabricatorPath));
+            var pathExists = SharedUtils.GetFabricatorPaths().TryGetValue(data.FabricatorType, out string[][] paths) && paths.Any(x => x.SequenceEqual(data.FabricatorPath));
             if (!pathExists)
             {
                 var steps = new List<string>();
@@ -46,7 +46,7 @@ namespace SNModding.CustomCraft3
         }
     }
 
-    internal class ItemData
+    public class ItemData
     {
         public string Name { get; set; }
         public string Description { get; set; }
