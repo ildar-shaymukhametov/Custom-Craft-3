@@ -5,10 +5,14 @@ using HarmonyLib;
 using Nautilus.Handlers;
 using Nautilus.Json.ExtensionMethods;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
+using UWE;
+using static HandReticle;
 
 namespace BZModding.CustomCraft3;
 
@@ -38,13 +42,11 @@ public class Plugin : BaseUnityPlugin
         Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
     }
 
-    private static void LoadNewRecipes()
+    private static IEnumerator RegisterNewItems(List<NewRecipeDto> items)
     {
-        var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "WorkingFiles", "NewRecipes.json");
-        var list = new List<NewRecipeDto>();
-        list.LoadJson(path);
+        yield return new WaitUntil(() => SpriteManager.hasInitialized);
 
-        foreach (var item in list)
+        foreach (var item in items)
         {
             var (itemData, errors) = item.Validate();
             if (itemData != null)
@@ -57,6 +59,15 @@ public class Plugin : BaseUnityPlugin
                 Logger.LogWarning($"New recipe ({item.Name}): {string.Join("; ", errors)}");
             }
         }
+    }
+
+    private static void LoadNewRecipes()
+    {
+        var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "WorkingFiles", "NewRecipes.json");
+        var list = new List<NewRecipeDto>();
+        list.LoadJson(path);
+
+        CoroutineHost.StartCoroutine(RegisterNewItems(list));
     }
 
     private static void LoadCustomSizes()
