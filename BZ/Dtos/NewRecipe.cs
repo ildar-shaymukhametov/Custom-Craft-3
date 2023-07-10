@@ -12,7 +12,7 @@ namespace BZModding.CustomCraft3.Dtos
         public int Height { get; set; }
         public string Icon { get; set; }
         public string Model { get; set; }
-        public Ingredient[] Ingredients { get; set; }
+        public IngredientDto[] Ingredients { get; set; }
         public string[] LinkedItems { get; set; }
         public int CraftAmount { get; set; }
         public string FabricatorType { get; set; }

@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 namespace BZModding.CustomCraft3.Dtos;
 
-internal class Ingredient
+internal class IngredientDto
 {
-    public Ingredient()
+    public IngredientDto()
     {
     }
 
-    public Ingredient(string name, int amount)
+    public IngredientDto(string name, int amount)
     {
         Name = name;
         Amount = amount;
@@ -19,7 +19,7 @@ internal class Ingredient
     public string Name { get; set; }
     public int Amount { get; set; }
 
-    public (global::Ingredient, List<string>) Validate()
+    public (Ingredient, List<string>) Validate()
     {
         var errors = new List<string>();
         if (!Enum.TryParse(Name, out TechType techType) && !EnumHandler.TryGetValue(Name, out techType))
@@ -28,6 +28,6 @@ internal class Ingredient
             return (null, errors);
         }
 
-        return (new global::Ingredient(techType, Amount), errors);
+        return (new Ingredient(techType, Amount), errors);
     }
 }

@@ -16,13 +16,13 @@ internal class Recipe
     {
         Name = techType.ToString();
         CraftAmount = recipeData.craftAmount;
-        Ingredients = recipeData.Ingredients.Select(x => new Ingredient(x.techType.ToString(), x.amount)).ToArray();
+        Ingredients = recipeData.Ingredients.Select(x => new IngredientDto(x.techType.ToString(), x.amount)).ToArray();
         LinkedItems = recipeData.LinkedItems.Select(x => x.ToString()).ToArray();
     }
 
     public string Name { get; set; }
     public int CraftAmount { get; set; }
-    public Ingredient[] Ingredients { get; set; }
+    public IngredientDto[] Ingredients { get; set; }
     public string[] LinkedItems { get; set; }
 
     public (TechType, RecipeData, List<string>) Validate()

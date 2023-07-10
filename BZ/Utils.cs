@@ -1,4 +1,5 @@
-﻿using Nautilus.Crafting;
+﻿using BZModding.CustomCraft3.Dtos;
+using Nautilus.Crafting;
 using Nautilus.Handlers;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace BZModding.CustomCraft3
 {
     internal static class Utils
     {
-        public static (RecipeData, List<string>) ValidateRecipeData(int craftAmount, Dtos.Ingredient[] ingredients, string[] linkedItems)
+        public static (RecipeData, List<string>) ValidateRecipeData(int craftAmount, IngredientDto[] ingredients, string[] linkedItems)
         {
             var errors = new List<string>();
             var data = new RecipeData
