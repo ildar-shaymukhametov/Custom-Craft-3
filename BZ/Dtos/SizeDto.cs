@@ -4,7 +4,7 @@ using Nautilus.Handlers;
 
 namespace BZModding.CustomCraft3.Dtos;
 
-internal class Size
+internal class SizeDto
 {
     public string Name { get; set; }
     public int Width { get; set; }

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace BZModding.CustomCraft3.Dtos
 {
-    internal class NewRecipe
+    internal class NewRecipeDto
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -18,7 +18,7 @@ namespace BZModding.CustomCraft3.Dtos
         public string FabricatorType { get; set; }
         public string[] FabricatorPath { get; set; }
         public float CraftTimeSeconds { get; set; }
-        public PdaGroupCategory PdaGroupCategory { get; set; }
+        public PdaGroupCategoryDto PdaGroupCategory { get; set; }
 
         public (ItemData, List<string>) Validate()
         {

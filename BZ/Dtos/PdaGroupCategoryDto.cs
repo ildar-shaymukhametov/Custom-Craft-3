@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BZModding.CustomCraft3.Dtos
 {
-    internal class PdaGroupCategory
+    internal class PdaGroupCategoryDto
     {
         public string TechCategory { get; set; }
         public string TechGroup { get; set; }

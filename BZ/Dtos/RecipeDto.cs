@@ -6,13 +6,13 @@ using System.Linq;
 
 namespace BZModding.CustomCraft3.Dtos;
 
-internal class Recipe
+internal class RecipeDto
 {
-    public Recipe()
+    public RecipeDto()
     {
     }
 
-    public Recipe(TechType techType, RecipeData recipeData)
+    public RecipeDto(TechType techType, RecipeData recipeData)
     {
         Name = techType.ToString();
         CraftAmount = recipeData.craftAmount;

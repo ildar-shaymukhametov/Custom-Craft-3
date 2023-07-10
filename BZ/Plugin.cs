@@ -41,7 +41,7 @@ public class Plugin : BaseUnityPlugin
     private static void LoadNewRecipes()
     {
         var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "WorkingFiles", "NewRecipes.json");
-        var list = new List<NewRecipe>();
+        var list = new List<NewRecipeDto>();
         list.LoadJson(path);
 
         foreach (var item in list)
@@ -62,7 +62,7 @@ public class Plugin : BaseUnityPlugin
     private static void LoadCustomSizes()
     {
         var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "WorkingFiles", "CustomSizes.json");
-        var list = new List<Size>();
+        var list = new List<SizeDto>();
         list.LoadJson(path);
 
         foreach (var item in list)
@@ -83,7 +83,7 @@ public class Plugin : BaseUnityPlugin
     private static void LoadModifiedRecipes()
     {
         var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "WorkingFiles", "ModifiedRecipes.json");
-        var list = new List<Recipe>();
+        var list = new List<RecipeDto>();
         list.LoadJson(path);
 
         foreach (var item in list)
@@ -109,7 +109,7 @@ public class Plugin : BaseUnityPlugin
             .Where(x => type.GetField(x.ToString())?.GetCustomAttribute<ObsoleteAttribute>() is null)
             .Select(x => (TechType: x, RecipeData: CraftDataHandler.GetRecipeData(x)))
             .Where(x => x.RecipeData is not null && x.RecipeData.Ingredients.Any())
-            .Select(x => new Recipe(x.TechType, x.RecipeData))
+            .Select(x => new RecipeDto(x.TechType, x.RecipeData))
             .ToList();
 
         var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "SampleFiles", "ModifiedRecipes.json");
@@ -144,10 +144,10 @@ public class Plugin : BaseUnityPlugin
 
     private static void GenerateSampleSizes()
     {
-        var list = new List<Size>
+        var list = new List<SizeDto>
         {
-            new Size { Height = 2, Width = 2, Name = TechType.Copper.ToString() },
-            new Size { Height = 3, Width = 2, Name = TechType.PowerCell.ToString() }
+            new SizeDto { Height = 2, Width = 2, Name = TechType.Copper.ToString() },
+            new SizeDto { Height = 3, Width = 2, Name = TechType.PowerCell.ToString() }
         };
 
         var path = Path.Combine(Paths.PluginPath, Assembly.GetExecutingAssembly().GetName().Name, "SampleFiles", "CustomSizes.json");
