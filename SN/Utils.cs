@@ -1,13 +1,13 @@
-﻿using CustomCraft3.Shared.Dtos;
-using Nautilus.Crafting;
+﻿using Nautilus.Crafting;
 using Nautilus.Handlers;
+using SNModding.CustomCraft3.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CustomCraft3.Shared
+namespace SNModding.CustomCraft3
 {
-    public static class SharedUtils
+    internal static class Utils
     {
         public static (RecipeData, List<string>) ValidateRecipeData(int craftAmount, Ingredient[] ingredients, string[] linkedItems)
         {

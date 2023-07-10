@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CustomCraft3.Shared.Dtos
+namespace SNModding.CustomCraft3.Dtos
 {
-    public class NewRecipe
+    internal class NewRecipe
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -45,7 +45,7 @@ namespace CustomCraft3.Shared.Dtos
                 errors.Add($"\"{Icon}\" is not a valid icon name. Default icon is used");
             }
 
-            var (recipeData, recipeErrors) = SharedUtils.ValidateRecipeData(CraftAmount, Ingredients, LinkedItems);
+            var (recipeData, recipeErrors) = Utils.ValidateRecipeData(CraftAmount, Ingredients, LinkedItems);
             if (recipeErrors.Any())
             {
                 errors.AddRange(recipeErrors);

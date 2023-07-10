@@ -3,13 +3,12 @@ using BepInEx.Logging;
 using HarmonyLib;
 using Nautilus.Handlers;
 using Nautilus.Json.ExtensionMethods;
+using SNModding.CustomCraft3.Dtos;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using CustomCraft3.Shared;
-using CustomCraft3.Shared.Dtos;
 
 namespace SNModding.CustomCraft3;
 
@@ -134,7 +133,7 @@ public class Plugin : BaseUnityPlugin
     {
         var result = new
         {
-            FabricatorTypesAndPaths = SharedUtils.GetFabricatorPaths(),
+            FabricatorTypesAndPaths = Utils.GetFabricatorPaths(),
             TechGroups = Enum.GetNames(typeof(TechGroup)),
             TechCategories = Enum.GetNames(typeof(TechCategory))
         };

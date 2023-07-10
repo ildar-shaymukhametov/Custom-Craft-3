@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace CustomCraft3.Shared.Dtos;
+namespace SNModding.CustomCraft3.Dtos;
 
-public class Ingredient
+internal class Ingredient
 {
     public Ingredient()
     {

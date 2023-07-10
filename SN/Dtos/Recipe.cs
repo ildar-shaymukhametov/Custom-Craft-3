@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CustomCraft3.Shared.Dtos;
+namespace SNModding.CustomCraft3.Dtos;
 
-public class Recipe
+internal class Recipe
 {
     public Recipe()
     {
@@ -34,7 +34,7 @@ public class Recipe
             return (default, default, errors);
         }
 
-        var recipeResult = SharedUtils.ValidateRecipeData(CraftAmount, Ingredients, LinkedItems);
+        var recipeResult = Utils.ValidateRecipeData(CraftAmount, Ingredients, LinkedItems);
         if (recipeResult.Item2.Any())
         {
             errors.AddRange(recipeResult.Item2);

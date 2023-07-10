@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CustomCraft3.Shared.Dtos
+namespace SNModding.CustomCraft3.Dtos
 {
-    public class PdaGroupCategory
+    internal class PdaGroupCategory
     {
         public string TechCategory { get; set; }
         public string TechGroup { get; set; }

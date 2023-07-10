@@ -2,9 +2,9 @@
 using System;
 using Nautilus.Handlers;
 
-namespace CustomCraft3.Shared.Dtos;
+namespace SNModding.CustomCraft3.Dtos;
 
-public class Size
+internal class Size
 {
     public string Name { get; set; }
     public int Width { get; set; }
